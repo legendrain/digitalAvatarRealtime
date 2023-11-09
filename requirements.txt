@@ -1,10 +1,6 @@
-opencv_python == 4.6.0.66
 python_speech_features == 0.6
 resampy == 0.2.2
-tensorflow == 1.15.2
-#torch系列库的安装需要到pytorch官网查询具体cuda编译版本的安装命令
-torch==1.13.1
-torchvision == 0.14.1
+tensorflow == 2.14.0
 protobuf==3.20.*
 loguru==0.7.0
 uvicorn==0.22.0
@@ -12,12 +8,16 @@ fastapi==0.100.1
 pydantic-settings==2.0.3
 GitPython==3.1.37
 python-magic==0.4.27
-face-alignment==1.4.0
 apscheduler==3.10.1
 aiohttp==3.8.5
 python-multipart==0.0.6
 moviepy==1.0.3
 aiofiles==23.2.1
 soundfile==0.12.1
-librosa==0.10.1
+opencv-python==4.8.1.78
+torch==2.1.0
+torchvision==0.16.0
+tqdm==4.45.0
 numba==0.56.4
+librosa==0.10.1
+mediapipe==0.10.7
