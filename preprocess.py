@@ -109,11 +109,9 @@ def preload_videos():
 def load_model():
     """加载模型到GPU"""
     # DINet预训练模型
-    get_DINet_model()
+    # get_DINet_model()
     # deepspeech模型
-    get_DSModel()
-    # face-alignment
-    get_fa()
+    # get_DSModel()
     # Wav2Lip288预训练模型
     get_Wav2Lip_model()
 
