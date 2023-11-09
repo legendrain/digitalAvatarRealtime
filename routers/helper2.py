@@ -4,11 +4,10 @@ import shutil
 import traceback
 import torch
 from loguru import logger
-from preprocess import get_Wav2Lip_model, get_fa, get_pool_executor
+from preprocess import get_Wav2Lip_model, get_pool_executor
 import aiofiles
 import uuid
 from functools import partial
-
 from wav2lip_288x288.inference import main
 
 

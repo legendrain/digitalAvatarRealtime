@@ -1,7 +1,6 @@
 import os
 import glob
 from typing import Dict
-import face_alignment
 import torch
 from DINet.models.DINet import DINet
 from objects import VideoFrames
@@ -11,10 +10,10 @@ from loguru import logger
 from wav2lip_288x288.inference import load_model as _load_wav2lip_model
 from concurrent.futures import ProcessPoolExecutor
 from configuration.development_config import Settings
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
 
 video_full_frames: Dict[str, VideoFrames] = {}
-# 人脸检测
-_fa = None
 # 推理模型
 _DINet_model = None
 # deepspeech 模型
@@ -23,6 +22,8 @@ _DSModel = None
 _Wav2Lip_model = None
 # 进程池执行器
 _pool_executor: ProcessPoolExecutor = None
+# mediapipe人脸遮罩检测器
+_face_landmarks_detector: vision.FaceLandmarker = None
 
 
 def get_DINet_model():
@@ -73,15 +74,21 @@ def get_DSModel():
     return _DSModel
 
 
-def get_fa():
-    """获取FaceAlignment实例 todo 待废弃"""
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    global _fa
-    if _fa is None:
-        logger.info(f"load face_alignment model")
-        _fa = face_alignment.FaceAlignment(
-            face_alignment.LandmarksType.TWO_HALF_D, device=device, face_detector='blazeface')
-    return _fa
+def get_face_landmarks_detector():
+    """获取mediapipe人脸遮罩检测器"""
+    global _face_landmarks_detector
+    if _face_landmarks_detector is None:
+        logger.info(f"load FaceLandmarker detector")
+        # Create an FaceLandmarker object.
+        _face_landmarks_detector = vision.FaceLandmarker.create_from_options(
+            vision.FaceLandmarkerOptions(
+                base_options=python.BaseOptions(
+                    model_asset_path="wav2lip_288x288/weights/face_landmarker_v2_with_blendshapes.task"),
+                output_face_blendshapes=True,
+                output_facial_transformation_matrixes=True,
+                num_faces=1)
+        )
+    return _face_landmarks_detector
 
 
 def preload_videos():
@@ -114,6 +121,8 @@ def load_model():
     # get_DSModel()
     # Wav2Lip288预训练模型
     get_Wav2Lip_model()
+    # mediapipe人脸遮罩检测器
+    get_face_landmarks_detector()
 
 
 def get_pool_executor():
